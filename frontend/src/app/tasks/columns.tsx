@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -14,17 +13,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { z } from 'zod'
 
-// Defines the shape of each row in our data.
-// TODO: Use a Zod schema here
-export type Task = {
-  id: string
-  description: string
-  journal: string
-  status: "to do" | "in progress" | "done"
-}
+export const TaskStatusEnum = z.enum(["to do", "in progress", "done"])
+export type TaskStatus = z.infer<typeof TaskStatusEnum>
 
-// Contains our column definitions
+const TaskSchema = z.object({
+    id: z.string(),
+    description: z.string(),
+    journal: z.string(),
+    status: TaskStatusEnum,
+});
+
+export type Task = z.infer<typeof TaskSchema>
+
 export const columns: ColumnDef<Task>[] = [
     {
         id: "select",
@@ -58,7 +60,7 @@ export const columns: ColumnDef<Task>[] = [
     },
     {
         accessorKey: "status",
-        header: () => <div className="text-right">Status</div>,
+        header: "Status",
     },
     {
         id: "actions",

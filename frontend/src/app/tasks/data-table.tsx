@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { TaskStatusEnum } from './columns'
 
 import {
   ColumnDef,
@@ -25,10 +26,16 @@ import {
 } from "@/components/ui/table"
 
 import { Button } from "@/components/ui/button"
+
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
@@ -42,10 +49,20 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
+  
+  const statusOptions = TaskStatusEnum.options;
+
+  // Table states
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  // User selection states
+  const [selectedStatus, setSelectedStatus] = React.useState<string>(statusOptions[0]);
+
+
+
 
   const table = useReactTable({
     data,
@@ -70,10 +87,10 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter descriptions..."
+          value={(table.getColumn("description")?.getFilterValue() as string) ?? ""}
           onChange={(event: { target: { value: any } }) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("description")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />
@@ -168,6 +185,23 @@ export function DataTable<TData, TValue>({
           Next
         </Button>
       </div>
+      <Input type="description_field" placeholder="Description" />
+      <Input type="journal_field" placeholder="Journal" />
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">Select Status</Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+          <DropdownMenuRadioGroup value={selectedStatus} onValueChange={setSelectedStatus}>
+            {statusOptions.map((status: any) => (
+              <DropdownMenuRadioItem key={status} value={status}>
+                {status}
+              </DropdownMenuRadioItem> 
+            ))}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <Button variant="outline">Add entry</Button>
     </div>
   )
 }
