@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { deleteTask } from "@/api/deleteTask"
 import { z } from 'zod'
 
 export const TaskStatusEnum = z.enum(["to do", "in progress", "done"])
@@ -77,13 +78,12 @@ export const columns: ColumnDef<Task>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(task.id)}
-                >
-                Copy task ID
+                <DropdownMenuItem onClick={() => navigator.clipboard.writeText(task.id)}>
+                    Copy task ID
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>View task</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => deleteTask(task.id)}>
+                    Delete
+                </DropdownMenuItem>
             </DropdownMenuContent>
             </DropdownMenu>
         )
